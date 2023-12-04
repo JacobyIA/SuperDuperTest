@@ -16,7 +16,7 @@ public class ElevatorUp extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        elevatorSubsystem.set(0);
+        elevatorSubsystem.up();
     }
 
     // Returns true when the command should end.
