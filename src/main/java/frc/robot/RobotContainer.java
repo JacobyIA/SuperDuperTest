@@ -9,10 +9,10 @@ import frc.robot.commands.elevator.ElevatorDown;
 import frc.robot.commands.elevator.ElevatorUp;
 import frc.robot.commands.elevator.ElevatorStop;
 
-
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -38,7 +38,8 @@ public class RobotContainer {
   private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final XboxController m_testController = new XboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController m_testController = new CommandXboxController(
+      OperatorConstants.kDriverControllerPort);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -64,14 +65,21 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Right Bumper (FOR TESTING) will raise the elevator (move the motor one way)
-    new JoystickButton(m_testController, Button.kRightBumper.value)
-    .whenPressed(new ElevatorUp(m_elevatorSubsystem))
-    .whenReleased(new ElevatorStop(m_elevatorSubsystem));
-    
-    // Left Bumper (FOR TESTING) will lower the elevator (move the motor opposite to the prior configuration)
-    new JoystickButton(m_testController, Button.kLeftBumper.value)
-    .whenPressed(new ElevatorDown(m_elevatorSubsystem))
-    .whenReleased(new ElevatorStop(m_elevatorSubsystem));
+    // new JoystickButton(m_testController, Button.kRightBumper.value)
+    // .whenPressed(new ElevatorUp(m_elevatorSubsystem))
+    // .whenReleased(new ElevatorStop(m_elevatorSubsystem));
+    m_testController.povDown()
+        .whileTrue(new ElevatorDown(m_elevatorSubsystem))
+        .onFalse(new ElevatorStop(m_elevatorSubsystem));
+
+    // Left Bumper (FOR TESTING) will lower the elevator (move the motor opposite to
+    // the prior configuration)
+    // new JoystickButton(m_testController, Button.kLeftBumper.value)
+    // .whenPressed(new ElevatorDown(m_elevatorSubsystem))
+    // .whenReleased(new ElevatorStop(m_elevatorSubsystem));
+    m_testController.povUp()
+        .whileTrue(new ElevatorUp(m_elevatorSubsystem))
+        .onFalse(new ElevatorStop(m_elevatorSubsystem));
   }
 
   /**
@@ -80,7 +88,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   // public Command getAutonomousCommand() {
-  //   // An example command will be run in autonomous
-  //   // return Autos.exampleAuto(m_exampleSubsystem);
+  // // An example command will be run in autonomous
+  // // return Autos.exampleAuto(m_exampleSubsystem);
   // }
 }
